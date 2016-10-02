@@ -148,7 +148,6 @@ object Huffman {
    *    the example invocation. Also define the return type of the `until` function.
    *  - try to find sensible parameter names for `xxx`, `yyy` and `zzz`.
    */
-//    def until(xxx: ???, yyy: ???)(zzz: ???): ??? = ???
     def until(
                fSingleton: (List[CodeTree]) => Boolean,
                fCombine: List[CodeTree] => List[CodeTree]
@@ -176,20 +175,29 @@ object Huffman {
    * This function decodes the bit sequence `bits` using the code tree `tree` and returns
    * the resulting list of characters.
    */
-//  TODO: implement!
     def decode(tree: CodeTree, bits: List[Bit]): List[Char] = {
-      def decodeReq(tree: CodeTree, bits: List[Bit], res: List[Char]): List[Char] = {
-        if (bits.isEmpty) res
-        tree match {
-          case Leaf(ch, _) => ch :: res
-          case Fork(left, right, _, _) => {
-            if (bits.head == 0) decodeReq(left, bits.tail, res) ++ res
-            else decodeReq(right, bits.tail, res) ++ res
+
+      def step(node: CodeTree, bits: List[Bit]): List[Char] = {
+        bits match {
+          case Nil => node match {
+            case Leaf(ch, weight) => List(ch)
+            case _ => Nil
+          }
+          case x :: xs => {
+            node match {
+              case Leaf(ch, weight) => {
+                ch :: step(tree, bits)
+              }
+              case Fork(left, right, chars, weight) => {
+                if (x == 0) step(left, xs)
+                else step(right, xs)
+              }
+            }
           }
         }
       }
 
-      decodeReq(tree, bits, List())
+      step(tree, bits)
     }
   
   /**
@@ -208,8 +216,7 @@ object Huffman {
   /**
    * Write a function that returns the decoded secret
    */
-//  TODO: implement!
-    def decodedSecret: List[Char] = List()
+    def decodedSecret: List[Char] = decode(frenchCode, secret)
   
 
   // Part 4a: Encoding using Huffman tree
@@ -218,8 +225,10 @@ object Huffman {
    * This function encodes `text` using the code tree `tree`
    * into a sequence of bits.
    */
-//  TODO: implement!
-    def encode(tree: CodeTree)(text: List[Char]): List[Bit] = List()
+//  TODO: implement
+    def encode(tree: CodeTree)(text: List[Char]): List[Bit] = {
+
+    }
   
   // Part 4b: Encoding using code table
 
